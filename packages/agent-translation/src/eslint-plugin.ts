@@ -5,7 +5,7 @@ const createRule = RuleCreator(
   (name) => `https://github.com/nextpay-ai/agent-translation/blob/main/docs/rules/${name}.md`,
 )
 
-export const noStaleHashRule = createRule({
+const noStaleHashRule = createRule({
   name: 'no-stale-hash',
   meta: {
     type: 'problem',
@@ -72,7 +72,12 @@ export const noStaleHashRule = createRule({
   },
 })
 
-const plugin = {
+interface ESLintPlugin {
+  rules: Record<string, unknown>
+  configs: Record<string, { rules: Record<string, string> }>
+}
+
+const plugin: ESLintPlugin = {
   rules: {
     'no-stale-hash': noStaleHashRule,
   },

@@ -1,7 +1,14 @@
 {
   "name": "@nextpay-ai/agent-translation",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
+  "runtimeCompat": {
+    "browser": true,
+    "bun": true,
+    "node": true,
+    "deno": false,
+    "workerd": false
+  },
   "exports": {
     ".": "./src/index.ts",
     "./react": "./src/react.tsx",
