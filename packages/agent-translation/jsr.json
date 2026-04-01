@@ -1,6 +1,6 @@
 {
   "name": "@nextpay-ai/agent-translation",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "license": "MIT",
   "runtimeCompat": {
     "browser": true,
