@@ -9,6 +9,10 @@
     "deno": false,
     "workerd": false
   },
+  "imports": {
+    "react": "npm:react@^18.0.0",
+    "react/jsx-runtime": "npm:react@^18.0.0/jsx-runtime"
+  },
   "exports": {
     ".": "./src/index.ts",
     "./react": "./src/react.tsx",

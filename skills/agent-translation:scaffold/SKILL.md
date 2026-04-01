@@ -49,15 +49,39 @@ If the user already answered some of these (e.g., "add English and Filipino"), s
 
 ## Step 3: Install the package
 
+**React apps** — install the UI package. It includes `TranslateProvider`, `useLocale`, `Translate`, and the styled `LocaleToggle`, all in one:
+
 ```bash
 # Bun
-bun add jsr:@nextpay-ai/agent-translation
+npx jsr add @nextpay-ai/agent-translation-ui
 
 # npm / pnpm / yarn
+npx jsr add @nextpay-ai/agent-translation-ui
+```
+
+**Non-React projects** (CLI tools, Node scripts, ESLint config only) — install the core package:
+
+```bash
 npx jsr add @nextpay-ai/agent-translation
 ```
 
 Use whichever package manager the project already uses.
+
+### Vite projects: add dedupe + optimizeDeps
+
+Add this to `vite.config.ts` to prevent duplicate context instances and ensure correct dev-server pre-bundling:
+
+```ts
+resolve: {
+  dedupe: ['@nextpay-ai/agent-translation'],
+},
+optimizeDeps: {
+  include: [
+    '@nextpay-ai/agent-translation',
+    '@nextpay-ai/agent-translation/react',
+  ],
+},
+```
 
 ## Step 4: Write translate.config.ts
 
@@ -85,10 +109,13 @@ declare module '@nextpay-ai/agent-translation' {
 
 ## Step 5: Wrap the app root with TranslateProvider
 
-Find the root component from step 1. Import and wrap — use the locale source the user described:
+Find the root component from step 1. Import from `@nextpay-ai/agent-translation-ui` (React apps) or `@nextpay-ai/agent-translation/react` (core only).
+
+**Important:** `translate.config.ts` is a side-effect module — `defineConfig()` registers the locale list at runtime. You must import it explicitly in your entry point. The `declare module` augmentation only affects TypeScript's type checker; forgetting this import silently falls back to `['en']` at runtime.
 
 ```tsx
-import { TranslateProvider } from '@nextpay-ai/agent-translation/react'
+import './translate.config' // must import — registers locales at runtime
+import { TranslateProvider } from '@nextpay-ai/agent-translation-ui'
 
 // Example with Convex user object:
 <TranslateProvider locale={currentUser?.locale ?? 'en'}>
@@ -110,20 +137,20 @@ If there's no locale preference system yet, default to `'en'` and note that wiri
 Ask the user where it should go, find the file, and add it:
 
 ```tsx
-import { LocaleToggle } from '@nextpay-ai/agent-translation/react'
+import { LocaleToggle } from '@nextpay-ai/agent-translation-ui'
 
 // Inside the component's JSX:
 <LocaleToggle />
 ```
 
-`LocaleToggle` uses base-ui if available, falls back to a native `<select>` otherwise. It reads the current locale from context and calls `setLocale` on change.
+`LocaleToggle` is a styled base-ui Select that shows a flag emoji trigger and a dropdown of all configured locales.
 
 ### Option B: I'll add it myself
 
-Give the user this snippet and tell them to drop it wherever they want the switcher:
+Give the user this snippet:
 
 ```tsx
-import { LocaleToggle } from '@nextpay-ai/agent-translation/react'
+import { LocaleToggle } from '@nextpay-ai/agent-translation-ui'
 
 // Drop this anywhere in your JSX:
 <LocaleToggle />
@@ -131,10 +158,10 @@ import { LocaleToggle } from '@nextpay-ai/agent-translation/react'
 
 ### Option C: I'll build my own component
 
-Show the user the `useLocale` hook API and point them to the docs:
+Show the user the `useLocale` hook API:
 
 ```tsx
-import { useLocale } from '@nextpay-ai/agent-translation/react'
+import { useLocale } from '@nextpay-ai/agent-translation-ui'
 
 function MyLocaleSwitcher() {
   const { locale, setLocale, locales } = useLocale()
@@ -210,18 +237,3 @@ If there are errors (missing locales or stale hashes), hand off to the `agent-tr
 - `translate.config.ts` must be in the TypeScript include paths. It usually is if it's at the project root.
 - `setLocale` from `useLocale()` handles in-app locale toggling. Persisting the choice back to the DB or localStorage is the app's responsibility — point this out to the user.
 - If the project already has i18n (i18next, lingui, etc.), flag the overlap before proceeding. agent-translation can coexist but the user should know.
-
-### Vite projects: add optimizeDeps
-
-If the project uses Vite, add this to `vite.config.ts` to avoid a runtime error caused by how JSR packages reference npm deps:
-
-```ts
-optimizeDeps: {
-  include: [
-    '@nextpay-ai/agent-translation',
-    '@nextpay-ai/agent-translation/react',
-  ],
-},
-```
-
-This tells Vite to pre-bundle the package during dev server startup, which resolves the internal React imports correctly before they reach the browser.

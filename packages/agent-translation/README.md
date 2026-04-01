@@ -26,11 +26,15 @@ The `<Translate>` component pattern, `<Var>`, `<Plural>`, and the locale-aware f
 
 ## Install
 
-```bash
-# Bun
-bun add jsr:@nextpay-ai/agent-translation
+**React apps** — install the UI package. It includes `TranslateProvider`, `useLocale`, `Translate`, `Var`, `Plural`, and a styled `LocaleToggle`, all in one:
 
-# npm / pnpm / yarn
+```bash
+npx jsr add @nextpay-ai/agent-translation-ui
+```
+
+**Non-React projects** (Node scripts, CLI tools, ESLint config only):
+
+```bash
 npx jsr add @nextpay-ai/agent-translation
 ```
 
@@ -97,6 +101,13 @@ declare module '@nextpay-ai/agent-translation' {
 
 Adding `'es'` to `locales` immediately makes `es` a required prop everywhere. TypeScript fails. Run the translate skill. TypeScript passes again.
 
+**Important:** `translate.config.ts` is a side-effect module. `defineConfig()` registers the locale list at runtime by mutating shared state inside the package. The `declare module` augmentation is TypeScript-only — forgetting to import the file silently falls back to `['en']` at runtime with no error. Import it explicitly in your app entry point:
+
+```ts
+// main.tsx (or wherever your app root is)
+import './translate.config' // must import — registers locales at runtime
+```
+
 ### JSX — `<Translate>`
 
 ```tsx
@@ -144,14 +155,14 @@ const brand = t(skip({ en: 'NextPay', reason: 'Brand name' }))
 ### Locale toggle
 
 ```tsx
-import { TranslateProvider, LocaleToggle } from '@nextpay-ai/agent-translation/react'
+import { TranslateProvider, LocaleToggle, useLocale } from '@nextpay-ai/agent-translation-ui'
 
 // Wrap your app
 <TranslateProvider locale={user.locale ?? 'en'}>
   <App />
 </TranslateProvider>
 
-// Place the toggle anywhere
+// Place the styled toggle anywhere (base-ui Select, flag emoji trigger)
 <LocaleToggle />
 
 // Or build your own
