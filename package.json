@@ -1,0 +1,9 @@
+{
+  "name": "agent-translation-workspace",
+  "private": true,
+  "workspaces": ["packages/*"],
+  "scripts": {
+    "test": "bun test --cwd packages/agent-translation",
+    "build": "bun run --cwd packages/agent-translation build"
+  }
+}
