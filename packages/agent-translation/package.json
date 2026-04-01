@@ -36,9 +36,15 @@
     "@base-ui-components/react": ">=1.0.0"
   },
   "peerDependenciesMeta": {
-    "react": { "optional": false },
-    "react-dom": { "optional": false },
-    "@base-ui-components/react": { "optional": true }
+    "react": {
+      "optional": false
+    },
+    "react-dom": {
+      "optional": false
+    },
+    "@base-ui-components/react": {
+      "optional": true
+    }
   },
   "dependencies": {
     "@clack/prompts": "^0.9.0",
@@ -47,7 +53,12 @@
     "glob": "^11.0.0"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/jsdom": "^28.0.1",
     "@types/react": "^18.0.0",
+    "happy-dom": "14",
+    "jsdom": "^29.0.1",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "typescript": "^5.5.0"
