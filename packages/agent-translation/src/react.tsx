@@ -21,7 +21,7 @@ interface TranslateProviderProps {
   children: React.ReactNode
 }
 
-export function TranslateProvider({ locale: localeProp, children }: TranslateProviderProps) {
+export function TranslateProvider({ locale: localeProp, children }: TranslateProviderProps): React.JSX.Element {
   const config = getConfig()
 
   // Track in-app locale switches (e.g., from <LocaleToggle>)
@@ -67,7 +67,7 @@ export function useLocale(): LocaleContextValue {
  * Wraps a dynamic value inside a <Translate> so the _v hash ignores it.
  * At runtime, renders its children directly with no wrapper element.
  */
-export function Var({ children }: { children: React.ReactNode }) {
+export function Var({ children }: { children: React.ReactNode }): React.JSX.Element {
   return <>{children}</>
 }
 
@@ -85,7 +85,7 @@ interface PluralProps {
  * Each locale's JSX is responsible for providing its own grammatically
  * correct singular/plural/zero forms.
  */
-export function Plural({ n, singular, zero, children }: PluralProps) {
+export function Plural({ n, singular, zero, children }: PluralProps): React.JSX.Element {
   if (n === 0 && zero !== undefined) return <>{zero}</>
   if (n === 1) return <>{singular}</>
   return <>{children}</>
@@ -104,7 +104,7 @@ export function Plural({ n, singular, zero, children }: PluralProps) {
  *   ph={<span>Kamusta <Var>{name}</Var></span>}
  * />
  */
-export function Translate(props: TranslateProps) {
+export function Translate(props: TranslateProps): React.JSX.Element {
   const { locale } = useContext(LocaleContext) ?? { locale: getConfig().defaultLocale }
   const { _v: _ignored, ctx: _ctx, tone: _tone, locale: _overrideLocale, ...localeMap } = props as any
   const activeLocale = _overrideLocale ?? locale
@@ -115,55 +115,28 @@ export function Translate(props: TranslateProps) {
 // ─── <LocaleToggle> ──────────────────────────────────────────────────────────
 
 /**
- * A drop-in locale switcher. Uses @base-ui-components/react's DropdownMenu
- * if available, otherwise falls back to a native <select>.
+ * A drop-in locale switcher rendered as a native <select>.
  *
- * For custom UI, use useLocale() instead.
+ * For custom UI (dropdown, flags, etc.), use useLocale() instead:
+ *
+ * ```tsx
+ * const { locale, setLocale, locales } = useLocale()
+ * ```
  */
-export function LocaleToggle() {
+export function LocaleToggle(): React.JSX.Element {
   const { locale, setLocale, locales } = useLocale()
 
-  let DropdownMenu: any
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    DropdownMenu = (globalThis as any).require?.('@base-ui-components/react')?.DropdownMenu
-    if (!DropdownMenu) throw new Error('not available')
-  } catch {
-    // Fallback: native <select> if @base-ui-components/react is not installed
-    return (
-      <select
-        value={locale}
-        onChange={(e) => setLocale(e.target.value)}
-        aria-label="Select language"
-      >
-        {locales.map((loc) => (
-          <option key={loc} value={loc}>
-            {getLocaleEmoji(loc)} {getLocaleNativeName(loc)}
-          </option>
-        ))}
-      </select>
-    )
-  }
-
   return (
-    <DropdownMenu.Root>
-      <DropdownMenu.Trigger>
-        {getLocaleEmoji(locale)} {getLocaleNativeName(locale)}
-      </DropdownMenu.Trigger>
-      <DropdownMenu.Portal>
-        <DropdownMenu.Positioner>
-          <DropdownMenu.Popup>
-            {locales.map((loc) => (
-              <DropdownMenu.Item
-                key={loc}
-                onClick={() => setLocale(loc)}
-              >
-                {getLocaleEmoji(loc)} {getLocaleNativeName(loc)}
-              </DropdownMenu.Item>
-            ))}
-          </DropdownMenu.Popup>
-        </DropdownMenu.Positioner>
-      </DropdownMenu.Portal>
-    </DropdownMenu.Root>
+    <select
+      value={locale}
+      onChange={(e) => setLocale(e.target.value)}
+      aria-label="Select language"
+    >
+      {locales.map((loc) => (
+        <option key={loc} value={loc}>
+          {getLocaleEmoji(loc)} {getLocaleNativeName(loc)}
+        </option>
+      ))}
+    </select>
   )
 }

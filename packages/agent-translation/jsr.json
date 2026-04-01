@@ -1,0 +1,22 @@
+{
+  "name": "@nextpay-ai/agent-translation",
+  "version": "0.1.0",
+  "exports": {
+    ".": "./src/index.ts",
+    "./react": "./src/react.tsx",
+    "./eslint": "./src/eslint-plugin.ts"
+  },
+  "publish": {
+    "include": [
+      "src",
+      "cli",
+      "skills",
+      "README.md",
+      "LICENSE"
+    ],
+    "exclude": [
+      "**/*.test.ts",
+      "**/*.test.tsx"
+    ]
+  }
+}
