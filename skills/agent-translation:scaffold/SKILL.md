@@ -66,11 +66,15 @@ npx agent-translation check --json
 
 If there are existing strings that need translation, hand off to the `translate` skill.
 
-6. **Copy skills to `.claude/skills/`**
+6. **Install agent skills**
+
+Run the install command — it works with Claude Code (`.claude/skills/`) and any agent using `.agents/skills/`:
 
 ```bash
-cp -r node_modules/@nextpay-ai/agent-translation/../../skills/* .claude/skills/
+npx agent-translation install-skills
 ```
+
+This copies `agent-translation` and `agent-translation:scaffold` into whichever skills directories exist in your project.
 
 ## Notes
 

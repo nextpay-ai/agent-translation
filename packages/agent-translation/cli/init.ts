@@ -109,12 +109,16 @@ declare module '@nextpay-ai/agent-translation' {
   // Copy skills from the package's own skills/ directory into the project
   // Skills are bundled inside the npm package — use import.meta.url to locate them
   const pkgSkillsDir = new URL('../../skills', import.meta.url).pathname
-  const projectSkillsDir = join(cwd, '.claude', 'skills')
-  mkdirSync(join(projectSkillsDir, 'scaffold'), { recursive: true })
-  mkdirSync(join(projectSkillsDir, 'translate'), { recursive: true })
   const { copyFileSync } = await import('node:fs')
-  copyFileSync(join(pkgSkillsDir, 'scaffold', 'SKILL.md'), join(projectSkillsDir, 'scaffold', 'SKILL.md'))
-  copyFileSync(join(pkgSkillsDir, 'translate', 'SKILL.md'), join(projectSkillsDir, 'translate', 'SKILL.md'))
+  const skillsDirs = [join(cwd, '.claude', 'skills'), join(cwd, '.agents', 'skills')]
+  const targets = skillsDirs.filter((d) => existsSync(d) || existsSync(join(d, '..')))
+  const installs = targets.length > 0 ? targets : [skillsDirs[0]]
+  for (const dest of installs) {
+    mkdirSync(join(dest, 'agent-translation'), { recursive: true })
+    mkdirSync(join(dest, 'agent-translation:scaffold'), { recursive: true })
+    copyFileSync(join(pkgSkillsDir, 'agent-translation', 'SKILL.md'), join(dest, 'agent-translation', 'SKILL.md'))
+    copyFileSync(join(pkgSkillsDir, 'agent-translation:scaffold', 'SKILL.md'), join(dest, 'agent-translation:scaffold', 'SKILL.md'))
+  }
 
   s.stop('Configuration written.')
 

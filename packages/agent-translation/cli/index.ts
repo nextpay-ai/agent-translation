@@ -71,16 +71,24 @@ async function main() {
     case 'install-skills': {
       const { mkdirSync, copyFileSync, existsSync: exists } = await import('node:fs')
       const pkgSkillsDir = new URL('../../skills', import.meta.url).pathname
-      const dest = join(cwd, '.claude', 'skills')
-      mkdirSync(join(dest, 'scaffold'), { recursive: true })
-      mkdirSync(join(dest, 'translate'), { recursive: true })
       if (!exists(pkgSkillsDir)) {
         console.error('Skills directory not found in package. Try: curl -fsSL https://raw.githubusercontent.com/nextpay-ai/agent-translation/main/skills/install.sh | sh')
         process.exit(1)
       }
-      copyFileSync(join(pkgSkillsDir, 'scaffold', 'SKILL.md'), join(dest, 'scaffold', 'SKILL.md'))
-      copyFileSync(join(pkgSkillsDir, 'translate', 'SKILL.md'), join(dest, 'translate', 'SKILL.md'))
-      console.log(`Skills installed to ${dest}/`)
+      const skillDirs = [
+        join(cwd, '.claude', 'skills'),
+        join(cwd, '.agents', 'skills'),
+      ]
+      // Install into whichever parent dirs exist; default to .claude/skills if neither does
+      const targets = skillDirs.filter((d) => exists(d) || exists(join(d, '..', '..')))
+      const installs = targets.length > 0 ? targets : [skillDirs[0]]
+      for (const dest of installs) {
+        mkdirSync(join(dest, 'agent-translation'), { recursive: true })
+        mkdirSync(join(dest, 'agent-translation:scaffold'), { recursive: true })
+        copyFileSync(join(pkgSkillsDir, 'agent-translation', 'SKILL.md'), join(dest, 'agent-translation', 'SKILL.md'))
+        copyFileSync(join(pkgSkillsDir, 'agent-translation:scaffold', 'SKILL.md'), join(dest, 'agent-translation:scaffold', 'SKILL.md'))
+        console.log(`Skills installed to ${dest}/`)
+      }
       break
     }
 

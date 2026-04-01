@@ -1,5 +1,5 @@
 ---
-name: agent-translation:translate
+name: agent-translation
 description: Fix missing or stale translations. Auto-triggers on TypeScript errors for missing locale props or lint errors for stale _v hashes. Asks the user which model to use and whether to run parallel subagents.
 ---
 
