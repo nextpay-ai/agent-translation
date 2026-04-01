@@ -6,27 +6,30 @@
   "type": "module",
   "exports": {
     ".": {
-      "import": "./src/index.ts",
-      "types": "./src/index.ts"
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
     },
     "./react": {
-      "import": "./src/react.tsx",
-      "types": "./src/react.tsx"
+      "import": "./dist/react.js",
+      "types": "./dist/react.d.ts"
     },
     "./eslint": {
-      "import": "./src/eslint-plugin.ts",
-      "types": "./src/eslint-plugin.ts"
+      "import": "./dist/eslint.js",
+      "require": "./dist/eslint.cjs",
+      "types": "./dist/eslint.d.ts"
     }
   },
   "bin": {
     "agent-translation": "./cli/index.ts"
   },
   "files": [
+    "dist",
     "src",
     "cli",
     "skills"
   ],
   "scripts": {
+    "build": "tsup",
     "test": "bun test",
     "typecheck": "tsc --noEmit"
   },
@@ -51,6 +54,7 @@
     "jsdom": "^29.0.1",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
+    "tsup": "^8.5.1",
     "typescript": "^5.5.0"
   }
 }
