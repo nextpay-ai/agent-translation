@@ -50,9 +50,11 @@ If the user already answered some of these (e.g., "add English and Filipino"), s
 ## Step 3: Install the package
 
 ```bash
-bun add @nextpay-ai/agent-translation
-# or: npm install @nextpay-ai/agent-translation
-# or: pnpm add @nextpay-ai/agent-translation
+# Bun
+bun add jsr:@nextpay-ai/agent-translation
+
+# npm / pnpm / yarn
+npx jsr add @nextpay-ai/agent-translation
 ```
 
 Use whichever package manager the project already uses.

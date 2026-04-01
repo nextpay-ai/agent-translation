@@ -27,21 +27,23 @@ The `<Translate>` component pattern, `<Var>`, `<Plural>`, and the locale-aware f
 ## Install
 
 ```bash
-bun add @nextpay-ai/agent-translation
-# or
-npm install @nextpay-ai/agent-translation
+# Bun
+bun add jsr:@nextpay-ai/agent-translation
+
+# npm / pnpm / yarn
+npx jsr add @nextpay-ai/agent-translation
 ```
 
 ---
 
 ## Skills
 
-The package ships two Claude Code skills: `scaffold` (adds i18n to a project) and `translate` (fixes missing or stale translations). Three ways to install them:
+The package ships two skills: `agent-translation:scaffold` (adds i18n to a project) and `agent-translation` (fixes missing or stale translations). Works with Claude Code, Codex, and any agent that uses `.claude/skills/` or `.agents/skills/`.
 
 **Paste this prompt to your coding agent:**
 
 ```
-Read https://raw.githubusercontent.com/nextpay-ai/agent-translation/main/skills/scaffold/SKILL.md and follow the instructions to set up agent-translation in this project.
+Read https://raw.githubusercontent.com/nextpay-ai/agent-translation/main/skills/agent-translation:scaffold/SKILL.md and follow the instructions to set up agent-translation in this project.
 ```
 
 **Shell:**
@@ -50,13 +52,11 @@ Read https://raw.githubusercontent.com/nextpay-ai/agent-translation/main/skills/
 curl -fsSL https://raw.githubusercontent.com/nextpay-ai/agent-translation/main/skills/install.sh | sh
 ```
 
-**npx:**
+**CLI (after installing the package):**
 
 ```bash
-npx @nextpay-ai/agent-translation install-skills
+npx jsr run @nextpay-ai/agent-translation install-skills
 ```
-
-Running `npx agent-translation init` also copies the skills automatically as part of interactive setup.
 
 ---
 
