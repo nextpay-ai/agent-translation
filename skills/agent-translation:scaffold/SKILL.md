@@ -39,8 +39,10 @@ To set up agent-translation, I need a few answers:
    e.g., `user.locale` from Convex, `localStorage.getItem('locale')`, a Zustand store, etc.
    This determines what we pass to `<TranslateProvider locale={...}>`.
 
-5. **LocaleToggle placement** — where should the locale switcher UI live?
-   e.g., the app header, a settings page, a nav sidebar. I'll find the right file.
+5. **LocaleToggle** — how do you want to handle the locale switcher?
+   a) Place it for me — tell me where (header, settings page, nav sidebar, etc.)
+   b) I'll add it myself — give me a code snippet
+   c) I'll build my own component — show me the API
 ```
 
 If the user already answered some of these (e.g., "add English and Filipino"), skip those.
@@ -99,9 +101,11 @@ import { TranslateProvider } from '@nextpay-ai/agent-translation/react'
 
 If there's no locale preference system yet, default to `'en'` and note that wiring it up is a follow-up task.
 
-## Step 6: Add LocaleToggle to the UI
+## Step 6: LocaleToggle — three paths
 
-Find the component the user pointed to (header, nav, settings page). Import and place it:
+### Option A: Place it for me
+
+Ask the user where it should go, find the file, and add it:
 
 ```tsx
 import { LocaleToggle } from '@nextpay-ai/agent-translation/react'
@@ -110,7 +114,40 @@ import { LocaleToggle } from '@nextpay-ai/agent-translation/react'
 <LocaleToggle />
 ```
 
-`LocaleToggle` uses shadcn/base-ui if available, falls back to a native `<select>` otherwise.
+`LocaleToggle` uses base-ui if available, falls back to a native `<select>` otherwise. It reads the current locale from context and calls `setLocale` on change.
+
+### Option B: I'll add it myself
+
+Give the user this snippet and tell them to drop it wherever they want the switcher:
+
+```tsx
+import { LocaleToggle } from '@nextpay-ai/agent-translation/react'
+
+// Drop this anywhere in your JSX:
+<LocaleToggle />
+```
+
+### Option C: I'll build my own component
+
+Show the user the `useLocale` hook API and point them to the docs:
+
+```tsx
+import { useLocale } from '@nextpay-ai/agent-translation/react'
+
+function MyLocaleSwitcher() {
+  const { locale, setLocale, locales } = useLocale()
+
+  return (
+    <select value={locale} onChange={(e) => setLocale(e.target.value as Locale)}>
+      {locales.map((l) => (
+        <option key={l} value={l}>{l}</option>
+      ))}
+    </select>
+  )
+}
+```
+
+`locales` comes from `translate.config.ts` — no hardcoding needed. Direct them to the full docs: **https://github.com/nextpay-ai/agent-translation**
 
 ## Step 7: Set up the git hook
 
