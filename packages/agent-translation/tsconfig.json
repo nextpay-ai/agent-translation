@@ -11,5 +11,6 @@
     "noUnusedParameters": true,
     "skipLibCheck": true
   },
-  "include": ["src/**/*", "cli/**/*", "__tests__/**/*"]
+  "include": ["src/**/*", "cli/**/*"],
+  "exclude": ["__tests__/**/*"]
 }
