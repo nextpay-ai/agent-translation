@@ -1,3 +1,21 @@
+/**
+ * @module
+ *
+ * ESLint plugin for `@nextpay-ai/agent-translation`.
+ *
+ * Provides the `no-stale-hash` rule, which errors when a `_v` hash in a `t()`
+ * call no longer matches the `en` value. Auto-fixable.
+ *
+ * @example
+ * ```js
+ * import agentTranslation from '@nextpay-ai/agent-translation/eslint'
+ *
+ * export default [
+ *   { plugins: { 'agent-translation': agentTranslation },
+ *     rules: { 'agent-translation/no-stale-hash': 'error' } }
+ * ]
+ * ```
+ */
 import { RuleCreator } from '@typescript-eslint/utils/eslint-utils'
 import { fnv1a } from './hash'
 

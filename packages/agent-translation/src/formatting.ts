@@ -26,10 +26,12 @@ const LOCALE_TO_COUNTRY: Record<string, string> = {
   pt: 'PT',
 }
 
+/** Convert a short locale code (e.g. `'ph'`) to its BCP 47 tag (e.g. `'fil'`). Passes through unknown codes unchanged. */
 export function toBcp47(locale: string): string {
   return LOCALE_TO_BCP47[locale] ?? locale
 }
 
+/** Format a number as currency using `Intl.NumberFormat`. */
 export function formatCurrency(
   amount: number,
   currency: string,
@@ -41,6 +43,7 @@ export function formatCurrency(
   }).format(amount)
 }
 
+/** Format a `Date` using `Intl.DateTimeFormat`. */
 export function formatDateTime(
   date: Date,
   options: { locale: string; dateStyle?: 'full' | 'long' | 'medium' | 'short'; timeStyle?: 'full' | 'long' | 'medium' | 'short' },
@@ -49,6 +52,7 @@ export function formatDateTime(
   return new Intl.DateTimeFormat(toBcp47(locale), intlOptions).format(date)
 }
 
+/** Format a list of strings using `Intl.ListFormat` (e.g. `"a, b, and c"`). */
 export function formatList(
   items: string[],
   options: { locale: string; type?: 'conjunction' | 'disjunction' | 'unit' },
@@ -58,11 +62,13 @@ export function formatList(
   }).format(items)
 }
 
+/** Returns the English display name for a locale (e.g. `'ph'` → `'Filipino'`). */
 export function getLocaleName(locale: string): string {
   const displayNames = new Intl.DisplayNames(['en'], { type: 'language' })
   return displayNames.of(toBcp47(locale)) ?? locale
 }
 
+/** Returns the native display name for a locale (e.g. `'es'` → `'español'`). */
 export function getLocaleNativeName(locale: string): string {
   const bcp47 = toBcp47(locale)
   const displayNames = new Intl.DisplayNames([bcp47], { type: 'language' })

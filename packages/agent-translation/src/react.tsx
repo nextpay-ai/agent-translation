@@ -1,3 +1,15 @@
+/**
+ * @module
+ *
+ * React bindings for `@nextpay-ai/agent-translation`.
+ *
+ * - {@link TranslateProvider} — wrap your app root to set the active locale
+ * - {@link useLocale} — read and set the active locale in any component
+ * - {@link Translate} — render JSX content for the current locale
+ * - {@link LocaleToggle} — drop-in native `<select>` locale switcher
+ * - {@link Var} — wrap dynamic values inside `<Translate>` so hashes ignore them
+ * - {@link Plural} — render singular/plural/zero forms based on a count
+ */
 import React, { createContext, useContext, useState, useCallback } from 'react'
 import { setActiveLocale } from './translate'
 import { getConfig } from './config'
