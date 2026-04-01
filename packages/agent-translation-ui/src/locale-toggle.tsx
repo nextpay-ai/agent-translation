@@ -1,4 +1,4 @@
-import type React from 'react'
+import React from 'react'
 import { useLocale } from '@nextpay-ai/agent-translation/react'
 
 // ─── Locale helpers ───────────────────────────────────────────────────────────
@@ -58,31 +58,36 @@ function getNativeName(locale: string): string {
 export function LocaleToggle(): React.JSX.Element {
   const { locale, setLocale, locales } = useLocale()
 
-  return (
-    <label
-      style={{
+  return React.createElement(
+    'label',
+    {
+      style: {
         position: 'relative',
         display: 'inline-flex',
         alignItems: 'center',
-      }}
-    >
-      <span
-        aria-hidden="true"
-        style={{
+      },
+    },
+    React.createElement(
+      'span',
+      {
+        'aria-hidden': 'true',
+        style: {
           position: 'absolute',
           left: '0.8rem',
           pointerEvents: 'none',
           fontSize: '1rem',
           lineHeight: 1,
-        }}
-      >
-        {getFlag(locale)}
-      </span>
-      <select
-        aria-label="Select language"
-        value={locale}
-        onChange={(event) => setLocale(event.target.value)}
-        style={{
+        },
+      },
+      getFlag(locale),
+    ),
+    React.createElement(
+      'select',
+      {
+        'aria-label': 'Select language',
+        value: locale,
+        onChange: (event: React.ChangeEvent<HTMLSelectElement>) => setLocale(event.target.value),
+        style: {
           appearance: 'none',
           minWidth: '9rem',
           height: '2.9rem',
@@ -93,26 +98,29 @@ export function LocaleToggle(): React.JSX.Element {
           padding: '0 2.3rem 0 2.2rem',
           font: 'inherit',
           cursor: 'pointer',
-        }}
-      >
-        {(locales as readonly string[]).map((loc) => (
-          <option key={loc} value={loc}>
-            {getNativeName(loc)}
-          </option>
-        ))}
-      </select>
-      <span
-        aria-hidden="true"
-        style={{
+        },
+      },
+      ...(locales as readonly string[]).map((loc) =>
+        React.createElement(
+          'option',
+          { key: loc, value: loc },
+          getNativeName(loc),
+        ),
+      ),
+    ),
+    React.createElement(
+      'span',
+      {
+        'aria-hidden': 'true',
+        style: {
           position: 'absolute',
           right: '0.9rem',
           pointerEvents: 'none',
           fontSize: '0.65rem',
           opacity: 0.75,
-        }}
-      >
-        ▼
-      </span>
-    </label>
+        },
+      },
+      '▼',
+    ),
   )
 }
