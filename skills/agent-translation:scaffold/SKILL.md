@@ -210,3 +210,18 @@ If there are errors (missing locales or stale hashes), hand off to the `agent-tr
 - `translate.config.ts` must be in the TypeScript include paths. It usually is if it's at the project root.
 - `setLocale` from `useLocale()` handles in-app locale toggling. Persisting the choice back to the DB or localStorage is the app's responsibility — point this out to the user.
 - If the project already has i18n (i18next, lingui, etc.), flag the overlap before proceeding. agent-translation can coexist but the user should know.
+
+### Vite projects: add optimizeDeps
+
+If the project uses Vite, add this to `vite.config.ts` to avoid a runtime error caused by how JSR packages reference npm deps:
+
+```ts
+optimizeDeps: {
+  include: [
+    '@nextpay-ai/agent-translation',
+    '@nextpay-ai/agent-translation/react',
+  ],
+},
+```
+
+This tells Vite to pre-bundle the package during dev server startup, which resolves the internal React imports correctly before they reach the browser.

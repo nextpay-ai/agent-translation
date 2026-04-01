@@ -22,10 +22,6 @@ jobs:
         run: bun install
         working-directory: packages/agent-translation
 
-      - name: Build
-        run: bun run build
-        working-directory: packages/agent-translation
-
       - name: Publish to JSR
         run: npx jsr publish --allow-dirty
         working-directory: packages/agent-translation
