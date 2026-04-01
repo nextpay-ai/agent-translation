@@ -14,5 +14,9 @@
     "react": ">=18.0.0",
     "@base-ui-components/react": ">=1.0.0",
     "@nextpay-ai/agent-translation": "*"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3"
   }
 }

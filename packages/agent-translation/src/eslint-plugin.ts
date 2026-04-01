@@ -108,4 +108,5 @@ const plugin: ESLintPlugin = {
   },
 }
 
+export { noStaleHashRule }
 export default plugin
