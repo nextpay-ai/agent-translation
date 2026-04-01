@@ -181,6 +181,19 @@ import { TranslateProvider, LocaleToggle, useLocale } from '@nextpay-ai/agent-tr
 const { locale, setLocale, locales } = useLocale()
 ```
 
+### Persisting locale changes
+
+`TranslateProvider` accepts an `onLocaleChange` callback. Use it to write the new locale back to a database or any external store whenever the user switches languages. It also fires on mount if localStorage holds a different locale than the `locale` prop (so you can sync the stored preference back to your DB).
+
+```tsx
+<TranslateProvider
+  locale={currentUser?.locale ?? 'en'}
+  onLocaleChange={(locale) => updateUserLocale({ locale })}
+>
+  <App />
+</TranslateProvider>
+```
+
 ### Formatting
 
 ```ts

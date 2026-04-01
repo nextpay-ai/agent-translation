@@ -32,6 +32,15 @@ const LocaleContext = createContext<LocaleContextValue | null>(null)
 
 interface TranslateProviderProps {
   locale: string
+  /**
+   * Called whenever the active locale changes — either from a user toggle or
+   * when the stored localStorage value overrides the initial `locale` prop on mount.
+   * Use this to persist the new locale back to a database or any external store.
+   *
+   * @example
+   * <TranslateProvider locale={user.locale} onLocaleChange={(l) => updateUserLocale(l)}>
+   */
+  onLocaleChange?: (locale: string) => void
   children: React.ReactNode
 }
 
@@ -46,7 +55,7 @@ function readStoredLocale(validLocales: readonly string[]): string | null {
   }
 }
 
-export function TranslateProvider({ locale: localeProp, children }: TranslateProviderProps): React.JSX.Element {
+export function TranslateProvider({ locale: localeProp, onLocaleChange, children }: TranslateProviderProps): React.JSX.Element {
   const config = getConfig()
 
   // Track in-app locale switches (e.g., from <LocaleToggle>)
@@ -67,6 +76,16 @@ export function TranslateProvider({ locale: localeProp, children }: TranslatePro
   // Write to module-level var synchronously so t() can read it during this render
   setActiveLocale(internalLocale)
 
+  // Fire onLocaleChange if localStorage seeded a different locale than the prop
+  const onLocaleChangeRef = React.useRef(onLocaleChange)
+  onLocaleChangeRef.current = onLocaleChange
+  const didNotifyMount = React.useRef(false)
+  if (!didNotifyMount.current && internalLocale !== localeProp) {
+    didNotifyMount.current = true
+    // Schedule for after render so the callback doesn't run during render
+    Promise.resolve().then(() => onLocaleChangeRef.current?.(internalLocale))
+  }
+
   const handleSetLocale = useCallback((next: string) => {
     setActiveLocale(next)
     setInternalLocale(next)
@@ -75,6 +94,7 @@ export function TranslateProvider({ locale: localeProp, children }: TranslatePro
     } catch {
       // storage unavailable (SSR, private browsing quota, etc.) — silently ignore
     }
+    onLocaleChangeRef.current?.(next)
   }, [])
 
   return (
