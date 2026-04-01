@@ -71,6 +71,7 @@ Instructions:
 - Do NOT use skip() unless explicitly appropriate
 - Write natural, idiomatic translations — not word-for-word
 - When translating to Filipino (ph): use contemporary Filipino, not overly formal Tagalog
+- If the file is a React component and imports `t` from `@nextpay-ai/agent-translation`, change it to use `useT` from `@nextpay-ai/agent-translation/react` (or `@nextpay-ai/agent-translation-ui`) instead — `const t = useT()` at the top of the component. Remove any `useLocale()` call added purely for re-render subscription.
 ```
 
 ### 5. After all subagents complete

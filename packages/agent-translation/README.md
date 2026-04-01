@@ -130,17 +130,29 @@ import { Translate, Var, Plural } from '@nextpay-ai/agent-translation/react'
 />
 ```
 
-### Strings — `t()`
+### Strings — `useT()` (React) / `t()` (outside React)
+
+In React components, use the `useT()` hook. It reads locale from context and returns a bound `t` function — no module-level singleton, works correctly even when the build tool creates multiple module instances (common with Vite `optimizeDeps`):
+
+```tsx
+import { useT } from '@nextpay-ai/agent-translation/react'
+// or: import { useT } from '@nextpay-ai/agent-translation-ui'
+
+function MyComponent() {
+  const t = useT()
+  return <span>{t({ en: 'Dashboard', ph: 'Dashboard', _v: 'a1b2c3d4' })}</span>
+}
+```
+
+Outside React (Node scripts, non-component code), use the standalone `t()` and pass `locale` explicitly:
 
 ```ts
 import { t } from '@nextpay-ai/agent-translation'
 
-// Inside React — reads locale from context
-const label = t({ en: 'Dashboard', ph: 'Dashboard', _v: 'a1b2c3d4' })
-
-// Outside React — pass locale explicitly
 const msg = t({ en: 'Transfer failed', ph: 'Nabigo ang paglipat', _v: 'b7d1e4f2', locale: userLocale })
 ```
+
+> **Why not `t()` in React components?** The standalone `t()` reads `_activeLocale`, a module-level variable set by `TranslateProvider`. When build tools create multiple instances of the module (which happens with Vite `optimizeDeps` when index and react subpaths are both listed as separate entries), `setActiveLocale` writes to one instance and `t()` reads from another. `useT()` bypasses this entirely by injecting `locale` directly from context.
 
 ### Skip untranslatable strings
 

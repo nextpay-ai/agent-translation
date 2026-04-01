@@ -9,6 +9,7 @@ export default defineConfig([
     },
     format: ['esm'],
     dts: true,
+    splitting: false,
     external: ['react', 'react-dom', 'react/jsx-runtime'],
     jsx: 'react-jsx',
     sourcemap: true,

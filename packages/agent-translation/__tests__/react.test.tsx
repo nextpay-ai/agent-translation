@@ -37,7 +37,7 @@ g.navigator = jsdomWin.navigator
 
 // Now it is safe to import @testing-library/react — document is already set
 const { render, screen, cleanup } = await import('@testing-library/react')
-const { TranslateProvider, useLocale, Translate, Var, Plural } = await import('../src/react')
+const { TranslateProvider, useLocale, useT, Translate, Var, Plural } = await import('../src/react')
 
 // Set up a test config
 defineConfig({ locales: ['en', 'ph'] as const, defaultLocale: 'en', tones: ['formal'] as const })
@@ -131,4 +131,37 @@ test('<Plural> renders plural when n=0 and no zero prop', () => {
     </Plural>
   )
   expect(screen.getByText('0 items')).toBeTruthy()
+})
+
+function TDisplay({ arg }: { arg: Parameters<ReturnType<typeof useT>>[0] }) {
+  const t = useT()
+  return <span data-testid="t-output">{t(arg)}</span>
+}
+
+test('useT() returns the active locale string', () => {
+  const hash = fnv1a('Hello')
+  render(
+    <TranslateProvider locale="ph">
+      <TDisplay arg={{ en: 'Hello', ph: 'Kamusta', _v: hash }} />
+    </TranslateProvider>
+  )
+  expect(screen.getByTestId('t-output').textContent).toBe('Kamusta')
+})
+
+test('useT() updates when locale changes', () => {
+  const hash = fnv1a('Hello')
+  const arg = { en: 'Hello', ph: 'Kamusta', _v: hash }
+  const { rerender } = render(
+    <TranslateProvider locale="en">
+      <TDisplay arg={arg} />
+    </TranslateProvider>
+  )
+  expect(screen.getByTestId('t-output').textContent).toBe('Hello')
+
+  rerender(
+    <TranslateProvider locale="ph">
+      <TDisplay arg={arg} />
+    </TranslateProvider>
+  )
+  expect(screen.getByTestId('t-output').textContent).toBe('Kamusta')
 })

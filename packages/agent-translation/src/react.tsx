@@ -5,14 +5,16 @@
  *
  * - {@link TranslateProvider} — wrap your app root to set the active locale
  * - {@link useLocale} — read and set the active locale in any component
+ * - {@link useT} — locale-aware `t()` hook for React components (preferred over standalone `t`)
  * - {@link Translate} — render JSX content for the current locale
  * - {@link LocaleToggle} — drop-in native `<select>` locale switcher
  * - {@link Var} — wrap dynamic values inside `<Translate>` so hashes ignore them
  * - {@link Plural} — render singular/plural/zero forms based on a count
  */
 import React, { createContext, useContext, useState, useCallback } from 'react'
-import { setActiveLocale } from './translate'
+import { t, setActiveLocale } from './translate'
 import { getConfig } from './config'
+import type { TArg } from './types'
 import { getLocaleEmoji, getLocaleNativeName } from './formatting'
 import type { TranslateProps } from './types'
 
@@ -71,6 +73,30 @@ export function useLocale(): LocaleContextValue {
   const ctx = useContext(LocaleContext)
   if (!ctx) throw new Error('useLocale must be used inside <TranslateProvider>')
   return ctx
+}
+
+// ─── useT ────────────────────────────────────────────────────────────────────
+
+/**
+ * Returns a locale-aware translation function bound to the current React context.
+ *
+ * Preferred over the standalone `t()` import in React components. The standalone
+ * `t()` reads a module-level singleton (`_activeLocale`) which can be duplicated
+ * when build tools create multiple instances of the module. `useT()` avoids this
+ * by passing the locale from context directly into each `t()` call.
+ *
+ * @example
+ * function MyComponent() {
+ *   const t = useT()
+ *   return <span>{t({ en: 'Hello', ph: 'Kamusta', _v: '...' })}</span>
+ * }
+ */
+export function useT(): (arg: TArg) => string {
+  const { locale } = useLocale()
+  return useCallback(
+    (arg: TArg): string => t({ ...(arg as any), locale }),
+    [locale],
+  )
 }
 
 // ─── <Var> ──────────────────────────────────────────────────────────────────

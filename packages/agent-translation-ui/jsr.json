@@ -1,0 +1,26 @@
+{
+  "name": "@nextpay-ai/agent-translation-ui",
+  "version": "0.1.0",
+  "license": "MIT",
+  "runtimeCompat": {
+    "browser": true,
+    "bun": true,
+    "node": true,
+    "deno": false,
+    "workerd": false
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "publish": {
+    "include": [
+      "src",
+      "README.md",
+      "LICENSE"
+    ],
+    "exclude": [
+      "**/*.test.ts",
+      "**/*.test.tsx"
+    ]
+  }
+}
