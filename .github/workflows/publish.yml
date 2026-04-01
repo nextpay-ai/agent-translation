@@ -5,23 +5,34 @@ on:
     branches: [main]
 
 jobs:
-  publish:
+  publish-core:
+    name: Publish @nextpay-ai/agent-translation
     runs-on: ubuntu-latest
     permissions:
       contents: read
       id-token: write # required for JSR OIDC auth
-
     steps:
       - uses: actions/checkout@v4
-
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
-
-      - name: Install dependencies
-        run: bun install
+      - run: bun install
+        working-directory: packages/agent-translation
+      - run: npx jsr publish --allow-dirty
         working-directory: packages/agent-translation
 
-      - name: Publish to JSR
-        run: npx jsr publish --allow-dirty
-        working-directory: packages/agent-translation
+  publish-ui:
+    name: Publish @nextpay-ai/agent-translation-ui
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install
+        working-directory: packages/agent-translation-ui
+      - run: npx jsr publish --allow-dirty
+        working-directory: packages/agent-translation-ui

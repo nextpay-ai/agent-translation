@@ -35,11 +35,25 @@ interface TranslateProviderProps {
   children: React.ReactNode
 }
 
+const STORAGE_KEY = 'agent-translation:locale'
+
+function readStoredLocale(validLocales: readonly string[]): string | null {
+  try {
+    const stored = typeof localStorage !== 'undefined' ? localStorage.getItem(STORAGE_KEY) : null
+    return stored && validLocales.includes(stored) ? stored : null
+  } catch {
+    return null
+  }
+}
+
 export function TranslateProvider({ locale: localeProp, children }: TranslateProviderProps): React.JSX.Element {
   const config = getConfig()
 
   // Track in-app locale switches (e.g., from <LocaleToggle>)
-  const [internalLocale, setInternalLocale] = useState(localeProp)
+  // Seed from localStorage if present and valid, otherwise fall back to prop
+  const [internalLocale, setInternalLocale] = useState(
+    () => readStoredLocale(config.locales) ?? localeProp,
+  )
 
   // Sync prop changes to internal state during render — no useEffect needed.
   // React's recommended pattern for deriving state from props:
@@ -56,6 +70,11 @@ export function TranslateProvider({ locale: localeProp, children }: TranslatePro
   const handleSetLocale = useCallback((next: string) => {
     setActiveLocale(next)
     setInternalLocale(next)
+    try {
+      localStorage.setItem(STORAGE_KEY, next)
+    } catch {
+      // storage unavailable (SSR, private browsing quota, etc.) — silently ignore
+    }
   }, [])
 
   return (
