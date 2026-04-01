@@ -9,9 +9,7 @@
     "deno": false,
     "workerd": false
   },
-  "exports": {
-    ".": "./src/index.ts"
-  },
+  "exports": "./src/index.ts",
   "publish": {
     "include": [
       "src",
