@@ -1,3 +1,4 @@
+import type React from 'react'
 import { useLocale } from '@nextpay-ai/agent-translation/react'
 
 // ─── Locale helpers ───────────────────────────────────────────────────────────
@@ -40,7 +41,7 @@ function getNativeName(locale: string): string {
 // ─── LocaleToggle ─────────────────────────────────────────────────────────────
 
 /**
- * A compact locale switcher built on @base-ui-components/react Select.
+ * A compact locale switcher built on the native `<select>` element.
  *
  * Renders a flag emoji trigger that opens a styled dropdown listing all
  * configured locales. Reads and writes the active locale via `useLocale()`.
@@ -54,7 +55,7 @@ function getNativeName(locale: string): string {
  * <LocaleToggle />
  * ```
  */
-export function LocaleToggle() {
+export function LocaleToggle(): React.JSX.Element {
   const { locale, setLocale, locales } = useLocale()
 
   return (
