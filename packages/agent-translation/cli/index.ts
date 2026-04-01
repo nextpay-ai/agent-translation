@@ -68,14 +68,31 @@ async function main() {
       break
     }
 
+    case 'install-skills': {
+      const { mkdirSync, copyFileSync, existsSync: exists } = await import('node:fs')
+      const pkgSkillsDir = new URL('../../skills', import.meta.url).pathname
+      const dest = join(cwd, '.claude', 'skills')
+      mkdirSync(join(dest, 'scaffold'), { recursive: true })
+      mkdirSync(join(dest, 'translate'), { recursive: true })
+      if (!exists(pkgSkillsDir)) {
+        console.error('Skills directory not found in package. Try: curl -fsSL https://raw.githubusercontent.com/nextpay-ai/agent-translation/main/skills/install.sh | sh')
+        process.exit(1)
+      }
+      copyFileSync(join(pkgSkillsDir, 'scaffold', 'SKILL.md'), join(dest, 'scaffold', 'SKILL.md'))
+      copyFileSync(join(pkgSkillsDir, 'translate', 'SKILL.md'), join(dest, 'translate', 'SKILL.md'))
+      console.log(`Skills installed to ${dest}/`)
+      break
+    }
+
     default: {
       console.log(`Usage: agent-translation <command>
 
 Commands:
-  sync          Recompute _v hashes in-place
-  check         Report missing locales and stale hashes (exit 1 if any)
-  check --json  Output errors as JSON for skill consumption
-  init          Interactive project setup
+  sync             Recompute _v hashes in-place
+  check            Report missing locales and stale hashes (exit 1 if any)
+  check --json     Output errors as JSON for skill consumption
+  init             Interactive project setup
+  install-skills   Copy Claude Code skills to .claude/skills/
 `)
       break
     }

@@ -1,11 +1,11 @@
 # @nextpay-ai/agent-translation
 
-TypeScript-first i18n where the type system enforces locale completeness and coding agents do the translation work.
+i18n where TypeScript enforces that every locale is filled in, and coding agents do the actual translation.
 
-No JSON files. No external translation APIs. No manual handoff to translators.
+No JSON files. No cloud translation API. No waiting for someone to fill in strings.
 
 ```ts
-// Add a new locale to your config...
+// Add a locale to your config...
 export default defineConfig({ locales: ['en', 'ph', 'es'] as const, ... })
 
 // TypeScript immediately fails everywhere 'es' is missing.
@@ -16,11 +16,11 @@ export default defineConfig({ locales: ['en', 'ph', 'es'] as const, ... })
 
 ## Why
 
-Most i18n solutions fall into two categories: manage JSON files yourself (tedious, error-prone, stale), or send strings to a cloud translation API (runtime cost, privacy tradeoffs, CDN dependency).
+Most i18n solutions are either manage-your-own-JSON (tedious, stale, merge conflicts on every locale file) or send-to-a-cloud-API (runtime cost, privacy tradeoffs, another service to depend on).
 
-This library takes a different approach: translations are co-located with the code that uses them, the type system enforces completeness, and coding agents (running locally, on your CI, in your editor) handle the actual translation work. Adding a language is a one-line config change. The agents take care of the rest.
+This one works differently: translations live next to the code that uses them, TypeScript enforces that every locale is present, and coding agents handle the translation work. Adding a language is a one-line config change. The agents fill in the rest automatically.
 
-The idea isn't new. [General Translation](https://github.com/generaltranslation/gt) pioneered inline JSX translations with their `<T>` component, and this library borrows heavily from their design — the `<Translate>` component pattern, `<Var>` for dynamic values, `<Plural>` for count-aware grammar, and the locale-aware formatting utilities all trace back to their work. What's different here is the workflow: instead of a cloud API doing the translation at build time or runtime, coding agents do it locally with no external dependency.
+The `<Translate>` component pattern, `<Var>`, `<Plural>`, and the locale-aware formatting utilities are all borrowed from [General Translation](https://github.com/generaltranslation/gt) — their inline JSX translation approach is genuinely good and we didn't try to reinvent it. What's different here is the workflow: no cloud API, no build step, agents run locally.
 
 ---
 
@@ -34,13 +34,39 @@ npm install @nextpay-ai/agent-translation
 
 ---
 
+## Skills
+
+The package ships two Claude Code skills: `scaffold` (adds i18n to a project) and `translate` (fixes missing or stale translations). Three ways to install them:
+
+**Paste this prompt to your coding agent:**
+
+```
+Read https://raw.githubusercontent.com/nextpay-ai/agent-translation/main/skills/scaffold/SKILL.md and follow the instructions to set up agent-translation in this project.
+```
+
+**Shell:**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/nextpay-ai/agent-translation/main/skills/install.sh | sh
+```
+
+**npx:**
+
+```bash
+npx @nextpay-ai/agent-translation install-skills
+```
+
+Running `npx agent-translation init` also copies the skills automatically as part of interactive setup.
+
+---
+
 ## Setup
 
 ```bash
 npx agent-translation init
 ```
 
-Asks you which locales and tones to support, whether to add a git hook, and where to place the locale toggle. Generates `translate.config.ts` and wires everything up.
+Asks which locales and tones to support, whether to add a git hook, and where to place the locale toggle. Generates `translate.config.ts` and wires everything up.
 
 ---
 
@@ -113,7 +139,7 @@ import { t, skip } from '@nextpay-ai/agent-translation'
 const brand = t(skip({ en: 'NextPay', reason: 'Brand name' }))
 ```
 
-`reason` is required and visible in code review. `grep 'skip('` audits all escape hatches.
+`reason` is required and shows up in code review. `grep 'skip('` audits all escape hatches.
 
 ### Locale toggle
 
@@ -159,43 +185,33 @@ Fix by running:
 npx agent-translation sync  # recomputes all _v hashes in-place
 ```
 
-Then re-run the translate skill to update the affected locale translations.
+Then re-run the translate skill to update affected locale translations.
 
 ---
 
 ## CLI
 
 ```bash
-npx agent-translation sync          # recompute _v hashes
-npx agent-translation check         # report errors, exit 1 if any
-npx agent-translation check --json  # machine-readable output
-npx agent-translation init          # interactive setup
+npx agent-translation sync             # recompute _v hashes
+npx agent-translation check            # report errors, exit 1 if any
+npx agent-translation check --json     # machine-readable output
+npx agent-translation init             # interactive setup
+npx agent-translation install-skills   # copy Claude Code skills to .claude/skills/
 ```
-
----
-
-## Claude Code skills
-
-Two skills ship in `skills/` — copy them to your project's `.claude/skills/` directory (or let `init` do it):
-
-- `scaffold` — adds the library to a project
-- `translate` — fixes missing and stale translations, with model selection and parallel subagent support
-
-The `translate` skill recommends Haiku for translation work. It's a well-defined task with full context (the `en` value, `ctx`, and `tone` give the agent everything it needs), and Haiku handles it correctly at a fraction of the cost of larger models.
 
 ---
 
 ## Trade-offs
 
-This approach works best in codebases where coding agents are part of the development workflow. If your team doesn't use agents, the translate skill is just a convenient prompt — you'd be filling in locale props by hand, which is the same as any other i18n library.
+This works well in codebases where coding agents are already part of the workflow. If your team doesn't use agents, the translate skill is just a prompt — you'd be filling in locale props by hand, same as any other i18n library.
 
-The `_v` hash mechanism catches stale translations when `en` copy changes, but only for string-valued `t()` calls. JSX `<Translate>` props require the agent to inspect git diffs for changed `en={...}` props.
+The `_v` hash catches stale translations for string `t()` calls. JSX `<Translate>` props are harder — the agent needs to inspect git diffs for changed `en={...}` props where sibling locales weren't updated in the same commit.
 
 ---
 
 ## Credits
 
-Heavy inspiration from [General Translation](https://github.com/generaltranslation/gt) — the inline JSX translation pattern, `<Plural>`, `<Var>`, and the locale-aware formatting utilities all trace back to their work. If you want cloud-powered AI translation without the agent-driven workflow, check out GT.
+[General Translation](https://github.com/generaltranslation/gt) did the hard design work here. The inline JSX translation pattern, `<Plural>`, `<Var>`, and the locale-aware formatting utilities all come from their library. If you want cloud-powered translation without the agent workflow, use GT directly.
 
 ---
 
