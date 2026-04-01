@@ -1,0 +1,19 @@
+name: Publish to JSR
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # required for JSR OIDC auth (no token secrets needed)
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Publish to JSR
+        run: npx jsr publish --allow-slow-types --allow-dirty
+        working-directory: packages/agent-translation
