@@ -14,9 +14,9 @@
       "types": "./dist/react.d.ts"
     },
     "./eslint": {
+      "types": "./dist/eslint.d.ts",
       "import": "./dist/eslint.js",
-      "require": "./dist/eslint.cjs",
-      "types": "./dist/eslint.d.ts"
+      "require": "./dist/eslint.cjs"
     }
   },
   "bin": {

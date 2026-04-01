@@ -4,6 +4,8 @@
   "workspaces": ["packages/*"],
   "scripts": {
     "test": "bun test --cwd packages/agent-translation",
-    "build": "bun run --cwd packages/agent-translation build"
+    "build": "bun run --cwd packages/agent-translation build",
+    "build:demo": "bun run --cwd packages/agent-translation build && bun run --cwd packages/demo build",
+    "dev:demo": "bun run --cwd packages/demo dev"
   }
 }

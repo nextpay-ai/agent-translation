@@ -12,7 +12,6 @@
   },
   "peerDependencies": {
     "react": ">=18.0.0",
-    "@base-ui-components/react": ">=1.0.0",
     "@nextpay-ai/agent-translation": "*"
   },
   "devDependencies": {

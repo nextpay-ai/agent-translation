@@ -1,4 +1,3 @@
-import { Select } from '@base-ui-components/react/select'
 import { useLocale } from '@nextpay-ai/agent-translation/react'
 
 // ─── Locale helpers ───────────────────────────────────────────────────────────
@@ -59,57 +58,60 @@ export function LocaleToggle() {
   const { locale, setLocale, locales } = useLocale()
 
   return (
-    <Select.Root
-      value={locale}
-      onValueChange={(val) => val && setLocale(val)}
+    <label
+      style={{
+        position: 'relative',
+        display: 'inline-flex',
+        alignItems: 'center',
+      }}
     >
-      <Select.Trigger
-        aria-label="Select language"
-        className="flex size-8 items-center justify-center rounded-lg text-sidebar-foreground/70 transition-colors hover:bg-sidebar-foreground/10 hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      <span
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          left: '0.8rem',
+          pointerEvents: 'none',
+          fontSize: '1rem',
+          lineHeight: 1,
+        }}
       >
-        <Select.Value>
-          <span className="text-base leading-none" aria-hidden="true">
-            {getFlag(locale)}
-          </span>
-        </Select.Value>
-      </Select.Trigger>
-
-      <Select.Portal>
-        <Select.Positioner side="right" align="end" sideOffset={8} className="isolate z-50">
-          <Select.Popup className="min-w-36 overflow-hidden rounded-md bg-popover text-popover-foreground shadow-md ring-1 ring-foreground/10 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95 origin-(--transform-origin)">
-            <Select.List className="p-1">
-              {(locales as readonly string[]).map((loc) => (
-                <Select.Item
-                  key={loc}
-                  value={loc}
-                  className="relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
-                >
-                  <span className="text-base leading-none" aria-hidden="true">
-                    {getFlag(loc)}
-                  </span>
-                  <Select.ItemText>{getNativeName(loc)}</Select.ItemText>
-                  <Select.ItemIndicator className="absolute right-2 flex size-4 items-center justify-center">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="12"
-                      height="12"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      aria-hidden="true"
-                    >
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
-                  </Select.ItemIndicator>
-                </Select.Item>
-              ))}
-            </Select.List>
-          </Select.Popup>
-        </Select.Positioner>
-      </Select.Portal>
-    </Select.Root>
+        {getFlag(locale)}
+      </span>
+      <select
+        aria-label="Select language"
+        value={locale}
+        onChange={(event) => setLocale(event.target.value)}
+        style={{
+          appearance: 'none',
+          minWidth: '9rem',
+          height: '2.9rem',
+          borderRadius: '999px',
+          border: '1px solid rgba(255, 255, 255, 0.12)',
+          background: 'rgba(255, 255, 255, 0.04)',
+          color: 'inherit',
+          padding: '0 2.3rem 0 2.2rem',
+          font: 'inherit',
+          cursor: 'pointer',
+        }}
+      >
+        {(locales as readonly string[]).map((loc) => (
+          <option key={loc} value={loc}>
+            {getNativeName(loc)}
+          </option>
+        ))}
+      </select>
+      <span
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          right: '0.9rem',
+          pointerEvents: 'none',
+          fontSize: '0.65rem',
+          opacity: 0.75,
+        }}
+      >
+        ▼
+      </span>
+    </label>
   )
 }

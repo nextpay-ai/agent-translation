@@ -218,3 +218,20 @@ The `_v` hash catches stale translations for string `t()` calls. JSX `<Translate
 ## License
 
 MIT © NextPay AI
+
+---
+
+## Demo Site
+
+This repo now includes a GitHub Pages demo app in `packages/demo`.
+
+```bash
+bun install
+bun run dev:demo
+```
+
+Build the production Pages bundle locally with:
+
+```bash
+bun run build:demo
+```
