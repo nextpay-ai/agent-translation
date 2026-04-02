@@ -5,19 +5,9 @@
   "license": "MIT",
   "type": "module",
   "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    },
-    "./react": {
-      "import": "./dist/react.js",
-      "types": "./dist/react.d.ts"
-    },
-    "./eslint": {
-      "types": "./dist/eslint.d.ts",
-      "import": "./dist/eslint.js",
-      "require": "./dist/eslint.cjs"
-    }
+    ".": "./src/index.ts",
+    "./react": "./src/react.tsx",
+    "./eslint": "./src/eslint-plugin.ts"
   },
   "bin": {
     "agent-translation": "./cli/index.ts"
@@ -30,6 +20,7 @@
   ],
   "scripts": {
     "build": "tsup",
+    "postbuild": "rm -rf dist",
     "test": "bun test",
     "typecheck": "tsc --noEmit"
   },
